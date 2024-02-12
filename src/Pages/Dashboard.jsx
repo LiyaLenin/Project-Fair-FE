@@ -6,7 +6,25 @@ import MyProject from '../Components/MyProject'
 
 function Dashboard() {
 
+
   const [username, setUsername] = useState("")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
 
   useEffect(() => {
     if (sessionStorage.getItem("username")) {
@@ -26,7 +44,7 @@ function Dashboard() {
     <>
       <Header insideDashboard />
       <div style={{ marginTop: '60px' }} className="dashboard container">
-        <h1 className='fw-bolder'> Welcome <span className='text-warning'>{username}</span></h1>
+        <h1 className='fw-bolder'> Welcome <span className='text-warning'>{username?.split("")[0]}</span></h1>
         <div className="row mt-5">
           <div className="col-lg-8">
             <MyProject />

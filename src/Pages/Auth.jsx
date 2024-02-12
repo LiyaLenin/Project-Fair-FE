@@ -1,12 +1,25 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Form } from 'react-bootstrap'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { loginAPI, registerAPI } from '../Services/allAPIs';
+import Spinner from 'react-bootstrap/Spinner';
+import { tokenAuthenticationContext } from '../Context API/TokenAuth';
 
 
 function Auth({ insideRegister }) {
+const{isAuthorised,setIsAuthorised}=useContext(tokenAuthenticationContext)
+
+
+
+
+
+
+
+  //spinner 
+  const [delay, setDelay] = useState(false)
+
   const navigate = useNavigate()
 
   const [userData, setUserData] = useState({
@@ -54,13 +67,17 @@ function Auth({ insideRegister }) {
         const result = await loginAPI({ email, password })
         console.log(result);
         if (result.status === 200) {
+          setDelay(true)
           sessionStorage.setItem("username", result.data.existingUser.username)
           sessionStorage.setItem("token", result.data.token)
+          sessionStorage.setItem("userDetails", JSON.stringify(result.data.existingUser))
+          setIsAuthorised(true)
+          setTimeout(() => {
+            setUserData({ email: "", password: "" })
 
-          setUserData({ email: "", password: "" })
-
-          navigate('/')
-
+            navigate('/')
+            setDelay(false)
+          }, 2000)
         }
         else {
           toast.warning(result.response.data)
@@ -112,7 +129,7 @@ function Auth({ insideRegister }) {
                     </div>
                     :
                     <div >
-                      <button onClick={handleLogin} className='btn btn-light mb-2'>Login</button>
+                      <button onClick={handleLogin} className='btn btn-light mb-2'>Login {delay && <Spinner animation="border" />} </button>:
                       <p>New User? Click here to <Link to={'/register'}>Register</Link></p>
                     </div>}
                 </Form>
